@@ -91,6 +91,56 @@ module.exports = exports['default'];
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _pieces = require('./pieces');
+
+var _pieces2 = _interopRequireDefault(_pieces);
+
+var _court = require('./court');
+
+var _court2 = _interopRequireDefault(_court);
+
+var Game = (function () {
+  function Game() {
+    _classCallCheck(this, Game);
+
+    this.reset();
+  }
+
+  _createClass(Game, [{
+    key: 'reset',
+    value: function reset() {
+      this.court = new _court2['default']();
+      this.pieces = new _pieces2['default']();
+      this.currentPiece = this.pieces.next();
+
+      // this.court.freeze(this.currentPiece);
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      this.currentPiece.y += 1;
+    }
+  }]);
+
+  return Game;
+})();
+
+exports['default'] = Game;
+module.exports = exports['default'];
+
+},{"./court":1,"./pieces":3}],3:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
@@ -228,95 +278,183 @@ var Pieces = (function () {
 exports['default'] = Pieces;
 module.exports = exports['default'];
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var Graphics = (function () {
+  function Graphics(game, canvas) {
+    _classCallCheck(this, Graphics);
+
+    this.game = game;
+    this.canvas = canvas;
+    this.scale = 15;
+    this.graphics = this.canvas.getContext('2d');
+    this.canvas.width = this.game.court.width * this.scale;
+    this.canvas.height = this.game.court.height * this.scale;
+  }
+
+  _createClass(Graphics, [{
+    key: 'draw',
+    value: function draw() {
+      this.graphics.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.drawCurrentPiece();
+      this.drawCourt();
+    }
+  }, {
+    key: 'drawCourt',
+    value: function drawCourt() {
+      var _this = this;
+
+      this.graphics.lineWidth = 1;
+      this.graphics.strokeStyle = '#999';
+      this.graphics.strokeRect(0, 0, this.canvas.width, this.canvas.height);
+      this.graphics.lineWidth = 0.5;
+      this.game.court.eachRow(function (row, rowIndex) {
+        row.forEach(function (col, colIndex) {
+          if (col) {
+            _this.graphics.fillStyle = col;
+            _this.graphics.fillRect(colIndex * _this.scale, rowIndex * _this.scale, _this.scale, _this.scale);
+          }
+          _this.graphics.strokeRect(colIndex * _this.scale - 0.5, rowIndex * _this.scale - 0.5, _this.scale, _this.scale);
+        });
+      });
+    }
+  }, {
+    key: 'drawCurrentPiece',
+    value: function drawCurrentPiece() {
+      var _this2 = this;
+
+      this.graphics.fillStyle = this.game.currentPiece.color;
+      this.game.currentPiece.eachRow(function (row, rowIndex) {
+        row.forEach(function (col, colIndex) {
+          if (col) {
+            _this2.graphics.fillRect((colIndex + _this2.game.currentPiece.x) * _this2.scale, (rowIndex + _this2.game.currentPiece.y) * _this2.scale, _this2.scale, _this2.scale);
+          }
+        });
+      });
+    }
+  }]);
+
+  return Graphics;
+})();
+
+exports['default'] = Graphics;
+module.exports = exports['default'];
+
+},{}],5:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _dataPieces = require('./data/pieces');
+var _dataGame = require('./data/game');
 
-var _dataPieces2 = _interopRequireDefault(_dataPieces);
+var _dataGame2 = _interopRequireDefault(_dataGame);
 
-var _dataCourt = require('./data/court');
+var _graphics = require('./graphics');
 
-var _dataCourt2 = _interopRequireDefault(_dataCourt);
+var _graphics2 = _interopRequireDefault(_graphics);
 
-var court = new _dataCourt2['default']();
-var pieces = new _dataPieces2['default']();
+// Initialize Canvas
 var canvas = document.createElement('canvas');
-var graphics = canvas.getContext('2d');
-var scale = 15;
-
-canvas.width = court.width * scale;
-canvas.height = court.height * scale;
 document.body.appendChild(canvas);
 
-var piece = pieces.next();
-
-piece.y = 100;
-court.freeze(piece);
-// court.debug();
-piece = pieces.next();
-// court.freeze(piece);
-// court.debug();
+var game = new _dataGame2['default']();
+var graphics = new _graphics2['default'](game, canvas);
 
 function tick() {
-  graphics.clearRect(0, 0, canvas.width, canvas.height);
-
-  drawCourt(court);
-  drawPiece(piece, graphics);
-
-  piece.y += 1;
-  // piece.x += 1;
-  // piece.rotate();
-
-  if (piece.y * scale > 150) {
-    court.freeze(piece);
-    piece = pieces.next();
-  }
-
-  graphics.strokeStyle = '#bbb';
-  graphics.lineWidth = 1;
-  graphics.strokeRect(0, 0, canvas.width, canvas.height);
-  graphics.lineWidth = 0.5;
-  for (var row = 0; row < canvas.height; row += scale) {
-    for (var col = 0; col < canvas.width; col += scale) {
-      graphics.strokeRect(col - 0.5, row - 0.5, scale, scale);
-    }
-  }
+  game.update();
+  graphics.draw();
 }
 
-function drawCourt(court) {
-  court.eachRow(function (row, rowIndex) {
-    row.forEach(function (col, colIndex) {
-      if (col) {
-        graphics.fillStyle = col;
-        graphics.fillRect(colIndex * scale, rowIndex * scale, scale, scale);
-      }
-    });
-  });
-}
-
-function drawPiece(piece, graphics) {
-  graphics.fillStyle = piece.color;
-  piece.eachRow(function (row, rowIndex) {
-    row.forEach(function (col, colIndex) {
-      if (col) {
-        graphics.fillRect((colIndex + piece.x) * scale, (rowIndex + piece.y) * scale, scale, scale);
-      }
-    });
-  });
-}
-
-setInterval(function () {
-  tick();
-  // piece.debug();
-  // piece.rotate();
-  // if(piece.rotationIndex % 4 === 0) {
-  //   piece = pieces.next();
-  //   console.log(`Next piece: ${piece.label}`);
-  // }
-}, 500);
+setInterval(tick, 1000);
 tick();
 
-},{"./data/court":1,"./data/pieces":2}]},{},[3]);
+// const court = new Court();
+// const pieces = new Pieces();
+// const graphics = canvas.getContext('2d');
+// const scale = 15;
+//
+// // canvas.width = court.width * scale;
+// // canvas.height = court.height * scale;
+//
+//
+// let piece = pieces.next();
+//
+// piece.y = 100;
+// court.freeze(piece);
+// // court.debug();
+// piece = pieces.next();
+// // court.freeze(piece);
+// // court.debug();
+//
+// function tick() {
+//   graphics.clearRect(0, 0, canvas.width, canvas.height);
+//
+//   drawCourt(court);
+//   drawPiece(piece, graphics);
+//
+//   piece.y += 1;
+//   // piece.x += 1;
+//   // piece.rotate();
+//
+//   if(piece.y*scale > 150) {
+//     court.freeze(piece);
+//     piece = pieces.next();
+//   }
+//
+//   graphics.strokeStyle = '#bbb';
+//   graphics.lineWidth = 1;
+//   graphics.strokeRect(0, 0, canvas.width, canvas.height);
+//   graphics.lineWidth = 0.5;
+//   for(let row=0; row<canvas.height; row+=scale) {
+//     for(let col=0; col<canvas.width; col+=scale) {
+//       graphics.strokeRect(col-0.5, row-0.5, scale, scale);
+//     }
+//   }
+// }
+//
+// function drawCourt(court) {
+//   court.eachRow((row, rowIndex) => {
+//     row.forEach((col, colIndex) => {
+//       if(col) {
+//         graphics.fillStyle = col;
+//         graphics.fillRect(colIndex*scale, rowIndex*scale, scale, scale);
+//       }
+//     });
+//   })
+// }
+//
+// function drawPiece(piece, graphics) {
+//   graphics.fillStyle = piece.color;
+//   piece.eachRow((row, rowIndex) => {
+//     row.forEach((col, colIndex) => {
+//       if(col) {
+//         graphics.fillRect(
+//           (colIndex+piece.x)*scale,
+//           (rowIndex+piece.y)*scale,
+//           scale, scale);
+//       }
+//     });
+//   });
+// }
+//
+// setInterval(function () {
+//   tick();
+//   // piece.debug();
+//   // piece.rotate();
+//   // if(piece.rotationIndex % 4 === 0) {
+//   //   piece = pieces.next();
+//   //   console.log(`Next piece: ${piece.label}`);
+//   // }
+// }, 500);
+// tick();
+
+},{"./data/game":2,"./graphics":4}]},{},[5]);
