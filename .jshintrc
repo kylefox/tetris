@@ -1,0 +1,7 @@
+{
+	"undef": true,
+	"esnext"   : true,
+	"globals": {
+		"console": true
+	}
+}
