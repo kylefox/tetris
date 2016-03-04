@@ -157,10 +157,6 @@ var Piece = (function () {
 		value: function rotation() {
 			return this.rotations[this.rotationIndex % this.rotations.length];
 		}
-
-		// TODO: It would simplify things if this method returned an array of Point objects
-		// each with an x and y coordinate. That would save us from doing modulo math everywhere.
-		// or maybe we have an .eachRow() method than yields ex: [0, 0, 1, 0]
 	}, {
 		key: 'rotate',
 		value: function rotate() {
