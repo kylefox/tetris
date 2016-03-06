@@ -176,8 +176,28 @@ class Piece {
 		this.x = 0;
 	}
 
+	clone() {
+		let clone = new Piece({
+			label: this.label,
+			color: this.color,
+			rotations: this.rotations,
+		});
+		clone.x = this.x;
+		clone.y = this.y;
+		clone.rotationIndex = this.rotationIndex;
+		return clone;
+	}
+
+	rotationAtIndex(index) {
+		return this.rotations[index % this.rotations.length];
+	}
+
 	rotation() {
-		return this.rotations[this.rotationIndex % this.rotations.length];
+		return this.rotationAtIndex(this.rotationIndex);
+	}
+
+	nextRotation() {
+		return this.rotationAtIndex(this.rotationIndex+1);
 	}
 
 	rotate() {
@@ -215,6 +235,13 @@ class Piece {
 
 	eachColumn(fn) {
 		return this.columns().forEach(fn);
+	}
+
+	// TODO
+	eachCell(fn) {
+		// yield each cell x,y (starting at 0,0) and the cell value (0 or 1)
+		// Also allow an "absolute" (boolean) flag
+		// fn(x, y, value);
 	}
 
 	debug() {

@@ -89,6 +89,61 @@ var Court = (function () {
       });
       console.log(output);
     }
+  }, {
+    key: 'allowMoveLeft',
+    value: function allowMoveLeft(piece) {
+      var columns = piece.columns();
+      var numColumns = columns.length;
+      for (var columnIndex = 0; columnIndex < numColumns; columnIndex++) {
+        var rows = columns[columnIndex];
+        var numRows = rows.length;
+        for (var rowIndex = 0; rowIndex < numRows; rowIndex++) {
+          if (rows[rowIndex]) {
+            // There's a block in this cell. Check to see if the court is empty in the next slot left;
+            if (!this.cellAvailable(piece.x + columnIndex - 1, piece.y + rowIndex)) {
+              return false;
+            }
+          }
+        }
+      }
+      return true;
+    }
+  }, {
+    key: 'allowMoveRight',
+    value: function allowMoveRight(piece) {
+      var columns = piece.columns();
+      for (var columnIndex = columns.length - 1; columnIndex > 0; columnIndex--) {
+        var rows = columns[columnIndex];
+        var numRows = rows.length;
+        for (var rowIndex = 0; rowIndex < numRows; rowIndex++) {
+          if (rows[rowIndex]) {
+            // There's a block in this cell. Check to see if the court is empty in the next slot left;
+            if (!this.cellAvailable(piece.x + columnIndex + 1, piece.y + rowIndex)) {
+              return false;
+            }
+          }
+        }
+      }
+      return true;
+    }
+  }, {
+    key: 'allowRotation',
+    value: function allowRotation(piece) {
+      var _this2 = this;
+
+      // Get next rotation and check if any of the piece blocks intersect with an occupied court cell.
+      var allowRotation = true;
+      var rotated = piece.clone();
+      rotated.rotate();
+      rotated.eachRow(function (row, rowIndex) {
+        row.forEach(function (column, columnIndex) {
+          if (column && !_this2.cellAvailable(rotated.x + columnIndex, rotated.y + rowIndex)) {
+            allowRotation = false;
+          }
+        });
+      });
+      return allowRotation;
+    }
   }]);
 
   return Court;
@@ -152,46 +207,28 @@ var Game = (function () {
   }, {
     key: 'moveRight',
     value: function moveRight() {
-      var columns = this.currentPiece.columns();
-      for (var columnIndex = columns.length - 1; columnIndex > 0; columnIndex--) {
-        var rows = columns[columnIndex];
-        var numRows = rows.length;
-        for (var rowIndex = 0; rowIndex < numRows; rowIndex++) {
-          if (rows[rowIndex]) {
-            // There's a block in this cell. Check to see if the court is empty in the next slot left;
-            if (!this.court.cellAvailable(this.currentPiece.x + columnIndex + 1, this.currentPiece.y + rowIndex)) {
-              return false;
-            }
-          }
-        }
+      if (this.court.allowMoveRight(this.currentPiece)) {
+        this.currentPiece.x++;
+        return true;
       }
-      this.currentPiece.x++;
-      return true;
+      return false;
     }
   }, {
     key: 'moveLeft',
     value: function moveLeft() {
-      var columns = this.currentPiece.columns();
-      var numColumns = columns.length;
-      for (var columnIndex = 0; columnIndex < numColumns; columnIndex++) {
-        var rows = columns[columnIndex];
-        var numRows = rows.length;
-        for (var rowIndex = 0; rowIndex < numRows; rowIndex++) {
-          if (rows[rowIndex]) {
-            // There's a block in this cell. Check to see if the court is empty in the next slot left;
-            if (!this.court.cellAvailable(this.currentPiece.x + columnIndex - 1, this.currentPiece.y + rowIndex)) {
-              return false;
-            }
-          }
-        }
+      if (this.court.allowMoveLeft(this.currentPiece)) {
+        this.currentPiece.x--;
+        return true;
       }
-      this.currentPiece.x--;
-      return true;
+      return false;
     }
   }, {
     key: 'rotate',
     value: function rotate() {
-      this.currentPiece.rotate();
+      if (this.court.allowRotation(this.currentPiece)) {
+        this.currentPiece.rotate();
+      }
+      return false;
     }
   }, {
     key: 'willVerticallyCollide',
@@ -291,9 +328,32 @@ var Piece = (function () {
 	}
 
 	_createClass(Piece, [{
+		key: 'clone',
+		value: function clone() {
+			var clone = new Piece({
+				label: this.label,
+				color: this.color,
+				rotations: this.rotations
+			});
+			clone.x = this.x;
+			clone.y = this.y;
+			clone.rotationIndex = this.rotationIndex;
+			return clone;
+		}
+	}, {
+		key: 'rotationAtIndex',
+		value: function rotationAtIndex(index) {
+			return this.rotations[index % this.rotations.length];
+		}
+	}, {
 		key: 'rotation',
 		value: function rotation() {
-			return this.rotations[this.rotationIndex % this.rotations.length];
+			return this.rotationAtIndex(this.rotationIndex);
+		}
+	}, {
+		key: 'nextRotation',
+		value: function nextRotation() {
+			return this.rotationAtIndex(this.rotationIndex + 1);
 		}
 	}, {
 		key: 'rotate',
@@ -336,6 +396,15 @@ var Piece = (function () {
 		key: 'eachColumn',
 		value: function eachColumn(fn) {
 			return this.columns().forEach(fn);
+		}
+
+		// TODO
+	}, {
+		key: 'eachCell',
+		value: function eachCell(fn) {
+			// yield each cell x,y (starting at 0,0) and the cell value (0 or 1)
+			// Also allow an "absolute" (boolean) flag
+			// fn(x, y, value);
 		}
 	}, {
 		key: 'debug',
@@ -497,7 +566,7 @@ window.addEventListener('keydown', function (event) {
     game.rotate();
     graphics.draw();
   }
-  console.log(event.which);
+  // console.log(event.which);
 });
 
 // const court = new Court();

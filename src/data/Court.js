@@ -68,4 +68,54 @@ export default class Court {
     console.log(output);
   }
 
+  allowMoveLeft(piece) {
+    const columns = piece.columns();
+    const numColumns = columns.length;
+    for(let columnIndex=0; columnIndex<numColumns; columnIndex++) {
+      const rows = columns[columnIndex];
+      const numRows = rows.length;
+      for(let rowIndex=0; rowIndex<numRows; rowIndex++) {
+        if(rows[rowIndex]) {
+          // There's a block in this cell. Check to see if the court is empty in the next slot left;
+          if(!this.cellAvailable(piece.x+columnIndex-1, piece.y+rowIndex)) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+  allowMoveRight(piece) {
+    const columns = piece.columns();
+    for(let columnIndex=columns.length-1; columnIndex>0; columnIndex--) {
+      const rows = columns[columnIndex];
+      const numRows = rows.length;
+      for(let rowIndex=0; rowIndex<numRows; rowIndex++) {
+        if(rows[rowIndex]) {
+          // There's a block in this cell. Check to see if the court is empty in the next slot left;
+          if(!this.cellAvailable(piece.x+columnIndex+1, piece.y+rowIndex)) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+  allowRotation(piece) {
+    // Get next rotation and check if any of the piece blocks intersect with an occupied court cell.
+    let allowRotation = true;
+    const rotated = piece.clone();
+    rotated.rotate();
+    rotated.eachRow((row, rowIndex) => {
+      row.forEach((column, columnIndex) => {
+        if(column && !this.cellAvailable(rotated.x+columnIndex, rotated.y+rowIndex)) {
+          allowRotation = false;
+        }
+      });
+    });
+    return allowRotation;
+  }
+
 }

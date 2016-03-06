@@ -27,7 +27,7 @@ window.addEventListener('keydown', function(event) {
     game.rotate();
     graphics.draw();
   }
-  console.log(event.which);
+  // console.log(event.which);
 });
 
 // const court = new Court();

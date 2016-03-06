@@ -29,44 +29,26 @@ export default class Game {
   }
 
   moveRight() {
-    const columns = this.currentPiece.columns();
-    for(let columnIndex=columns.length-1; columnIndex>0; columnIndex--) {
-      const rows = columns[columnIndex];
-      const numRows = rows.length;
-      for(let rowIndex=0; rowIndex<numRows; rowIndex++) {
-        if(rows[rowIndex]) {
-          // There's a block in this cell. Check to see if the court is empty in the next slot left;
-          if(!this.court.cellAvailable(this.currentPiece.x+columnIndex+1, this.currentPiece.y+rowIndex)) {
-            return false;
-          }
-        }
-      }
+    if(this.court.allowMoveRight(this.currentPiece)) {
+      this.currentPiece.x++;
+      return true;
     }
-    this.currentPiece.x++;
-    return true;
+    return false;
   }
 
   moveLeft() {
-    const columns = this.currentPiece.columns();
-    const numColumns = columns.length;
-    for(let columnIndex=0; columnIndex<numColumns; columnIndex++) {
-      const rows = columns[columnIndex];
-      const numRows = rows.length;
-      for(let rowIndex=0; rowIndex<numRows; rowIndex++) {
-        if(rows[rowIndex]) {
-          // There's a block in this cell. Check to see if the court is empty in the next slot left;
-          if(!this.court.cellAvailable(this.currentPiece.x+columnIndex-1, this.currentPiece.y+rowIndex)) {
-            return false;
-          }
-        }
-      }
+    if(this.court.allowMoveLeft(this.currentPiece)) {
+      this.currentPiece.x--;
+      return true;
     }
-    this.currentPiece.x--;
-    return true;
+    return false;
   }
 
   rotate() {
-    this.currentPiece.rotate();
+    if(this.court.allowRotation(this.currentPiece)) {
+      this.currentPiece.rotate();
+    }
+    return false;
   }
 
   willVerticallyCollide() {
