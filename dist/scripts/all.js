@@ -37,7 +37,7 @@ var Court = (function () {
   }, {
     key: 'cellIndexForPoint',
     value: function cellIndexForPoint(x, y) {
-      if (x >= this.width || y >= this.height || x < 0 || y < 0) {
+      if (!this.pointInBounds(x, y)) {
         throw new Error('Point (' + x + ', ' + y + ') is out of bounds (' + this.width + ', ' + this.height + ').');
       }
       return x % this.width + y * this.width;
@@ -46,6 +46,16 @@ var Court = (function () {
     key: 'occupied',
     value: function occupied(x, y) {
       return this.cells[this.cellIndexForPoint(x, y)];
+    }
+  }, {
+    key: 'cellAvailable',
+    value: function cellAvailable(x, y) {
+      return this.pointInBounds(x, y) && !this.occupied(x, y);
+    }
+  }, {
+    key: 'pointInBounds',
+    value: function pointInBounds(x, y) {
+      return !(x >= this.width || y >= this.height || x < 0 || y < 0);
     }
   }, {
     key: 'rows',
@@ -125,13 +135,33 @@ var Game = (function () {
   }, {
     key: 'update',
     value: function update() {
-      this.currentPiece.y += 1;
-
       // If the next Y increment will collide, freeze the piece and generate a new one.
-      if (this.currentPiece.y + 1 > this.court.height - 4) {
+      if (this.willVerticallyCollide()) {
         this.court.freeze(this.currentPiece);
         this.currentPiece = this.pieces.next();
+      } else {
+        this.currentPiece.y += 1;
       }
+    }
+  }, {
+    key: 'willVerticallyCollide',
+    value: function willVerticallyCollide() {
+      // Iterate from bottom up, ex: check lower rows first.
+      var rows = this.currentPiece.rows();
+      for (var rowIndex = rows.length - 1; rowIndex >= 0; rowIndex--) {
+        // TODO: skip completely empty rows and columns.
+        var columns = rows[rowIndex];
+        var numColumns = columns.length;
+        for (var columnIndex = 0; columnIndex < numColumns; columnIndex++) {
+          if (columns[columnIndex]) {
+            // There's a block in this cell. Check to see if the court is empty in the next slot down.
+            if (!this.court.cellAvailable(this.currentPiece.x + columnIndex, this.currentPiece.y + rowIndex + 1)) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
     }
   }]);
 
@@ -172,7 +202,7 @@ var L = {
 
 var T = {
 	label: 'T',
-	color: 'yellow',
+	color: 'pink',
 	rotations: [[0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0]]
 };
 
@@ -232,9 +262,26 @@ var Piece = (function () {
 			return rows;
 		}
 	}, {
+		key: 'columns',
+		value: function columns() {
+			var columns = [[], [], [], []];
+			this.eachRow(function (row, rowIndex) {
+				columns[0].push(row[0]);
+				columns[1].push(row[1]);
+				columns[2].push(row[2]);
+				columns[3].push(row[3]);
+			});
+			return columns;
+		}
+	}, {
 		key: 'eachRow',
 		value: function eachRow(fn) {
 			return this.rows().forEach(fn);
+		}
+	}, {
+		key: 'eachColumn',
+		value: function eachColumn(fn) {
+			return this.columns().forEach(fn);
 		}
 	}, {
 		key: 'debug',
@@ -340,6 +387,10 @@ var Graphics = (function () {
       this.game.currentPiece.eachRow(function (row, rowIndex) {
         row.forEach(function (col, colIndex) {
           if (col) {
+            _this2.graphics.fillStyle = _this2.game.currentPiece.color;
+            _this2.graphics.fillRect((colIndex + _this2.game.currentPiece.x) * _this2.scale, (rowIndex + _this2.game.currentPiece.y) * _this2.scale, _this2.scale, _this2.scale);
+          } else {
+            _this2.graphics.fillStyle = "#ffffcc";
             _this2.graphics.fillRect((colIndex + _this2.game.currentPiece.x) * _this2.scale, (rowIndex + _this2.game.currentPiece.y) * _this2.scale, _this2.scale, _this2.scale);
           }
         });

@@ -36,6 +36,13 @@ export default class Graphics {
     this.game.currentPiece.eachRow((row, rowIndex) => {
       row.forEach((col, colIndex) => {
         if(col) {
+          this.graphics.fillStyle = this.game.currentPiece.color;
+          this.graphics.fillRect(
+            (colIndex+this.game.currentPiece.x) * this.scale,
+            (rowIndex+this.game.currentPiece.y) * this.scale,
+            this.scale, this.scale);
+        } else {
+          this.graphics.fillStyle = "#ffffcc";
           this.graphics.fillRect(
             (colIndex+this.game.currentPiece.x) * this.scale,
             (rowIndex+this.game.currentPiece.y) * this.scale,

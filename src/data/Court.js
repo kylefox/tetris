@@ -21,7 +21,7 @@ export default class Court {
   }
 
   cellIndexForPoint(x, y) {
-    if(x >= this.width || y >= this.height || x < 0 || y < 0) {
+    if(!this.pointInBounds(x, y)) {
       throw new Error(`Point (${x}, ${y}) is out of bounds (${this.width}, ${this.height}).`);
     }
     return (x % this.width) + (y * this.width);
@@ -29,6 +29,14 @@ export default class Court {
 
   occupied(x, y) {
     return this.cells[this.cellIndexForPoint(x, y)];
+  }
+
+  cellAvailable(x, y) {
+    return this.pointInBounds(x, y) && !this.occupied(x, y);
+  }
+
+  pointInBounds(x, y) {
+    return !(x >= this.width || y >= this.height || x < 0 || y < 0);
   }
 
   rows() {

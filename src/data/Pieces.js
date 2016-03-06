@@ -78,7 +78,7 @@ const L = {
 
 const T = {
 	label: 'T',
-	color: 'yellow',
+	color: 'pink',
 	rotations: [
 	  [0,0,0,0,
 	   1,1,1,0,
@@ -198,8 +198,23 @@ class Piece {
 		return rows;
 	}
 
+	columns() {
+		let columns = [[], [], [], [],];
+		this.eachRow((row, rowIndex) => {
+			columns[0].push(row[0]);
+			columns[1].push(row[1]);
+			columns[2].push(row[2]);
+			columns[3].push(row[3]);
+		});
+		return columns;
+	}
+
 	eachRow(fn) {
 		return this.rows().forEach(fn);
+	}
+
+	eachColumn(fn) {
+		return this.columns().forEach(fn);
 	}
 
 	debug() {
