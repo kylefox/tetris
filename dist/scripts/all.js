@@ -121,13 +121,17 @@ var Game = (function () {
       this.court = new _court2['default']();
       this.pieces = new _pieces2['default']();
       this.currentPiece = this.pieces.next();
-
-      // this.court.freeze(this.currentPiece);
     }
   }, {
     key: 'update',
     value: function update() {
       this.currentPiece.y += 1;
+
+      // If the next Y increment will collide, freeze the piece and generate a new one.
+      if (this.currentPiece.y + 1 > this.court.height - 4) {
+        this.court.freeze(this.currentPiece);
+        this.currentPiece = this.pieces.next();
+      }
     }
   }]);
 
@@ -374,8 +378,22 @@ function tick() {
   graphics.draw();
 }
 
-setInterval(tick, 1000);
+setInterval(tick, 100);
 tick();
+
+window.addEventListener('keydown', function (event) {
+  if (event.which === 39) {
+    game.currentPiece.x++;
+    graphics.draw();
+  } else if (event.which === 37) {
+    game.currentPiece.x--;
+    graphics.draw();
+  } else if (event.which === 38) {
+    game.currentPiece.rotate();
+    graphics.draw();
+  }
+  console.log(event.which);
+});
 
 // const court = new Court();
 // const pieces = new Pieces();

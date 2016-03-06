@@ -11,12 +11,16 @@ export default class Game {
     this.court = new Court();
     this.pieces = new Pieces();
     this.currentPiece = this.pieces.next();
-
-    // this.court.freeze(this.currentPiece);
   }
 
   update() {
     this.currentPiece.y += 1;
+
+    // If the next Y increment will collide, freeze the piece and generate a new one.
+    if(this.currentPiece.y + 1 > this.court.height-4) {
+      this.court.freeze(this.currentPiece);
+      this.currentPiece = this.pieces.next();
+    }
   }
 
 }

@@ -13,8 +13,22 @@ function tick() {
   graphics.draw();
 }
 
-setInterval(tick, 1000);
+setInterval(tick, 100);
 tick();
+
+window.addEventListener('keydown', function(event) {
+  if(event.which === 39) {
+    game.currentPiece.x++;
+    graphics.draw();
+  } else if(event.which === 37) {
+    game.currentPiece.x--;
+    graphics.draw();
+  } else if(event.which === 38) {
+    game.currentPiece.rotate();
+    graphics.draw();
+  }
+  console.log(event.which);
+});
 
 // const court = new Court();
 // const pieces = new Pieces();
