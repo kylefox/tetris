@@ -15,9 +15,18 @@ export default class Game {
 
   update() {
     if(!this.moveDown()) {
-      this.court.freeze(this.currentPiece);
-      this.currentPiece = this.pieces.next();
+      this.next();
     }
+  }
+
+  next() {
+    this.court.freeze(this.currentPiece);
+    this.currentPiece = this.pieces.next();
+  }
+
+  drop() {
+    while(this.moveDown()) { };
+    this.next();
   }
 
   moveDown() {

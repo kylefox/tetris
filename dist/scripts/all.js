@@ -191,9 +191,20 @@ var Game = (function () {
     key: 'update',
     value: function update() {
       if (!this.moveDown()) {
-        this.court.freeze(this.currentPiece);
-        this.currentPiece = this.pieces.next();
+        this.next();
       }
+    }
+  }, {
+    key: 'next',
+    value: function next() {
+      this.court.freeze(this.currentPiece);
+      this.currentPiece = this.pieces.next();
+    }
+  }, {
+    key: 'drop',
+    value: function drop() {
+      while (this.moveDown()) {};
+      this.next();
     }
   }, {
     key: 'moveDown',
@@ -565,8 +576,10 @@ window.addEventListener('keydown', function (event) {
   } else if (event.which === 38) {
     game.rotate();
     graphics.draw();
+  } else if (event.which === 32) {
+    game.drop();
+    graphics.draw();
   }
-  // console.log(event.which);
 });
 
 // const court = new Court();

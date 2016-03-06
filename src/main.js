@@ -26,8 +26,10 @@ window.addEventListener('keydown', function(event) {
   } else if(event.which === 38) {
     game.rotate();
     graphics.draw();
+  } else if (event.which === 32) {
+    game.drop();
+    graphics.draw();
   }
-  // console.log(event.which);
 });
 
 // const court = new Court();
