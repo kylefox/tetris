@@ -18,10 +18,10 @@ tick();
 
 window.addEventListener('keydown', function(event) {
   if(event.which === 39) {
-    game.currentPiece.x++;
+    game.moveRight();
     graphics.draw();
   } else if(event.which === 37) {
-    game.currentPiece.x--;
+    game.moveLeft();
     graphics.draw();
   } else if(event.which === 38) {
     game.currentPiece.rotate();

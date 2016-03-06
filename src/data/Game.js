@@ -23,6 +23,43 @@ export default class Game {
     }
   }
 
+  moveRight() {
+    const columns = this.currentPiece.columns();
+    for(let columnIndex=columns.length-1; columnIndex>0; columnIndex--) {
+      const rows = columns[columnIndex];
+      const numRows = rows.length;
+      for(let rowIndex=0; rowIndex<numRows; rowIndex++) {
+        if(rows[rowIndex]) {
+          // There's a block in this cell. Check to see if the court is empty in the next slot left;
+          if(!this.court.cellAvailable(this.currentPiece.x+columnIndex+1, this.currentPiece.y+rowIndex)) {
+            return false;
+          }
+        }
+      }
+    }
+    this.currentPiece.x++;
+    return true;
+  }
+
+  moveLeft() {
+    const columns = this.currentPiece.columns();
+    const numColumns = columns.length;
+    for(let columnIndex=0; columnIndex<numColumns; columnIndex++) {
+      const rows = columns[columnIndex];
+      const numRows = rows.length;
+      for(let rowIndex=0; rowIndex<numRows; rowIndex++) {
+        if(rows[rowIndex]) {
+          // There's a block in this cell. Check to see if the court is empty in the next slot left;
+          if(!this.court.cellAvailable(this.currentPiece.x+columnIndex-1, this.currentPiece.y+rowIndex)) {
+            return false;
+          }
+        }
+      }
+    }
+    this.currentPiece.x--;
+    return true;
+  }
+
   willVerticallyCollide() {
     // TODO: Do we actually need to re-check this every update? *the court is static.*
     // Once a piece is frozen we can calculate the highest point in each column in the court.

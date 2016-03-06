@@ -144,6 +144,45 @@ var Game = (function () {
       }
     }
   }, {
+    key: 'moveRight',
+    value: function moveRight() {
+      var columns = this.currentPiece.columns();
+      for (var columnIndex = columns.length - 1; columnIndex > 0; columnIndex--) {
+        var rows = columns[columnIndex];
+        var numRows = rows.length;
+        for (var rowIndex = 0; rowIndex < numRows; rowIndex++) {
+          if (rows[rowIndex]) {
+            // There's a block in this cell. Check to see if the court is empty in the next slot left;
+            if (!this.court.cellAvailable(this.currentPiece.x + columnIndex + 1, this.currentPiece.y + rowIndex)) {
+              return false;
+            }
+          }
+        }
+      }
+      this.currentPiece.x++;
+      return true;
+    }
+  }, {
+    key: 'moveLeft',
+    value: function moveLeft() {
+      var columns = this.currentPiece.columns();
+      var numColumns = columns.length;
+      for (var columnIndex = 0; columnIndex < numColumns; columnIndex++) {
+        var rows = columns[columnIndex];
+        var numRows = rows.length;
+        for (var rowIndex = 0; rowIndex < numRows; rowIndex++) {
+          if (rows[rowIndex]) {
+            // There's a block in this cell. Check to see if the court is empty in the next slot left;
+            if (!this.court.cellAvailable(this.currentPiece.x + columnIndex - 1, this.currentPiece.y + rowIndex)) {
+              return false;
+            }
+          }
+        }
+      }
+      this.currentPiece.x--;
+      return true;
+    }
+  }, {
     key: 'willVerticallyCollide',
     value: function willVerticallyCollide() {
       // TODO: Do we actually need to re-check this every update? *the court is static.*
@@ -438,10 +477,10 @@ tick();
 
 window.addEventListener('keydown', function (event) {
   if (event.which === 39) {
-    game.currentPiece.x++;
+    game.moveRight();
     graphics.draw();
   } else if (event.which === 37) {
-    game.currentPiece.x--;
+    game.moveLeft();
     graphics.draw();
   } else if (event.which === 38) {
     game.currentPiece.rotate();
