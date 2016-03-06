@@ -24,6 +24,10 @@ export default class Game {
   }
 
   willVerticallyCollide() {
+    // TODO: Do we actually need to re-check this every update? *the court is static.*
+    // Once a piece is frozen we can calculate the highest point in each column in the court.
+    // Would be an array where index are column indexes and elements are the highest cell (y value) that has a block (or undefined if no blocks in that column).
+
     // Iterate from bottom up, ex: check lower rows first.
     let rows = this.currentPiece.rows();
     for(let rowIndex=rows.length-1; rowIndex>=0; rowIndex--) {
