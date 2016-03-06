@@ -24,7 +24,7 @@ window.addEventListener('keydown', function(event) {
     game.moveLeft();
     graphics.draw();
   } else if(event.which === 38) {
-    game.currentPiece.rotate();
+    game.rotate();
     graphics.draw();
   }
   console.log(event.which);

@@ -135,13 +135,19 @@ var Game = (function () {
   }, {
     key: 'update',
     value: function update() {
-      // If the next Y increment will collide, freeze the piece and generate a new one.
-      if (this.willVerticallyCollide()) {
+      if (!this.moveDown()) {
         this.court.freeze(this.currentPiece);
         this.currentPiece = this.pieces.next();
-      } else {
-        this.currentPiece.y += 1;
       }
+    }
+  }, {
+    key: 'moveDown',
+    value: function moveDown() {
+      if (!this.willVerticallyCollide()) {
+        this.currentPiece.y += 1;
+        return true;
+      }
+      return false;
     }
   }, {
     key: 'moveRight',
@@ -181,6 +187,11 @@ var Game = (function () {
       }
       this.currentPiece.x--;
       return true;
+    }
+  }, {
+    key: 'rotate',
+    value: function rotate() {
+      this.currentPiece.rotate();
     }
   }, {
     key: 'willVerticallyCollide',
@@ -483,7 +494,7 @@ window.addEventListener('keydown', function (event) {
     game.moveLeft();
     graphics.draw();
   } else if (event.which === 38) {
-    game.currentPiece.rotate();
+    game.rotate();
     graphics.draw();
   }
   console.log(event.which);

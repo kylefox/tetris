@@ -14,13 +14,18 @@ export default class Game {
   }
 
   update() {
-    // If the next Y increment will collide, freeze the piece and generate a new one.
-    if(this.willVerticallyCollide()) {
+    if(!this.moveDown()) {
       this.court.freeze(this.currentPiece);
       this.currentPiece = this.pieces.next();
-    } else {
-      this.currentPiece.y += 1;
     }
+  }
+
+  moveDown() {
+    if(!this.willVerticallyCollide()) {
+      this.currentPiece.y += 1;
+      return true;
+    }
+    return false;
   }
 
   moveRight() {
@@ -58,6 +63,10 @@ export default class Game {
     }
     this.currentPiece.x--;
     return true;
+  }
+
+  rotate() {
+    this.currentPiece.rotate();
   }
 
   willVerticallyCollide() {
