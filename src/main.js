@@ -9,6 +9,7 @@ const game = new Game();
 const graphics = new Graphics(game, canvas);
 
 window.game = game;
+window.graphics = graphics;
 
 function tick() {
   game.update();

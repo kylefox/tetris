@@ -584,6 +584,7 @@ var game = new _dataGame2['default']();
 var graphics = new _graphics2['default'](game, canvas);
 
 window.game = game;
+window.graphics = graphics;
 
 function tick() {
   game.update();
