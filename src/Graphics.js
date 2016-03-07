@@ -17,9 +17,10 @@ export default class Graphics {
 
   drawCourt() {
     this.graphics.lineWidth = 1;
-    this.graphics.strokeStyle = '#bbb';
+    this.graphics.strokeStyle = '#9aa7ad';
     this.graphics.strokeRect(0, 0, this.canvas.width, this.canvas.height);
     this.graphics.lineWidth = 0.5;
+    this.graphics.strokeStyle = '#e5e8ea';
     this.game.court.eachRow((row, rowIndex) => {
       row.forEach((col, colIndex) => {
         if(col) {

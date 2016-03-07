@@ -520,9 +520,10 @@ var Graphics = (function () {
       var _this = this;
 
       this.graphics.lineWidth = 1;
-      this.graphics.strokeStyle = '#bbb';
+      this.graphics.strokeStyle = '#9aa7ad';
       this.graphics.strokeRect(0, 0, this.canvas.width, this.canvas.height);
       this.graphics.lineWidth = 0.5;
+      this.graphics.strokeStyle = '#e5e8ea';
       this.game.court.eachRow(function (row, rowIndex) {
         row.forEach(function (col, colIndex) {
           if (col) {
