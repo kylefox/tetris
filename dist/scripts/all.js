@@ -520,7 +520,7 @@ var Graphics = (function () {
       var _this = this;
 
       this.graphics.lineWidth = 1;
-      this.graphics.strokeStyle = '#999';
+      this.graphics.strokeStyle = '#bbb';
       this.graphics.strokeRect(0, 0, this.canvas.width, this.canvas.height);
       this.graphics.lineWidth = 0.5;
       this.game.court.eachRow(function (row, rowIndex) {
@@ -545,8 +545,11 @@ var Graphics = (function () {
             _this2.graphics.fillStyle = _this2.game.currentPiece.color;
             _this2.graphics.fillRect((colIndex + _this2.game.currentPiece.x) * _this2.scale, (rowIndex + _this2.game.currentPiece.y) * _this2.scale, _this2.scale, _this2.scale);
           } else {
-            _this2.graphics.fillStyle = "#ffffcc";
-            _this2.graphics.fillRect((colIndex + _this2.game.currentPiece.x) * _this2.scale, (rowIndex + _this2.game.currentPiece.y) * _this2.scale, _this2.scale, _this2.scale);
+            // this.graphics.fillStyle = "#ffffcc";
+            // this.graphics.fillRect(
+            //   (colIndex+this.game.currentPiece.x) * this.scale,
+            //   (rowIndex+this.game.currentPiece.y) * this.scale,
+            //   this.scale, this.scale);
           }
         });
       });

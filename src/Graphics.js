@@ -17,7 +17,7 @@ export default class Graphics {
 
   drawCourt() {
     this.graphics.lineWidth = 1;
-    this.graphics.strokeStyle = '#999';
+    this.graphics.strokeStyle = '#bbb';
     this.graphics.strokeRect(0, 0, this.canvas.width, this.canvas.height);
     this.graphics.lineWidth = 0.5;
     this.game.court.eachRow((row, rowIndex) => {
@@ -42,11 +42,11 @@ export default class Graphics {
             (rowIndex+this.game.currentPiece.y) * this.scale,
             this.scale, this.scale);
         } else {
-          this.graphics.fillStyle = "#ffffcc";
-          this.graphics.fillRect(
-            (colIndex+this.game.currentPiece.x) * this.scale,
-            (rowIndex+this.game.currentPiece.y) * this.scale,
-            this.scale, this.scale);
+          // this.graphics.fillStyle = "#ffffcc";
+          // this.graphics.fillRect(
+          //   (colIndex+this.game.currentPiece.x) * this.scale,
+          //   (rowIndex+this.game.currentPiece.y) * this.scale,
+          //   this.scale, this.scale);
         }
       });
     });
