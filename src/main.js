@@ -8,6 +8,10 @@ document.body.appendChild(canvas);
 const game = new Game();
 const graphics = new Graphics(game, canvas);
 
+// 1 block = 10px by default.
+// Scale up (20px per block);
+graphics.setScale(2);
+
 window.game = game;
 window.graphics = graphics;
 

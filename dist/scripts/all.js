@@ -501,13 +501,19 @@ var Graphics = (function () {
 
     this.game = game;
     this.canvas = canvas;
-    this.scale = 15;
+    this.initialScale = 10;
+    this.setScale(1);
     this.graphics = this.canvas.getContext('2d');
-    this.canvas.width = this.game.court.width * this.scale;
-    this.canvas.height = this.game.court.height * this.scale;
   }
 
   _createClass(Graphics, [{
+    key: 'setScale',
+    value: function setScale(factor) {
+      this.scale = this.initialScale * factor;
+      this.canvas.width = this.game.court.width * this.scale;
+      this.canvas.height = this.game.court.height * this.scale;
+    }
+  }, {
     key: 'draw',
     value: function draw() {
       this.graphics.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -582,6 +588,10 @@ document.body.appendChild(canvas);
 
 var game = new _dataGame2['default']();
 var graphics = new _graphics2['default'](game, canvas);
+
+// 1 block = 10px by default.
+// Scale up (20px per block);
+graphics.setScale(2);
 
 window.game = game;
 window.graphics = graphics;

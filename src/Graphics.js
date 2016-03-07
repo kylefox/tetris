@@ -3,8 +3,13 @@ export default class Graphics {
   constructor(game, canvas) {
     this.game = game;
     this.canvas = canvas;
-    this.scale = 15;
+    this.initialScale = 10;
+    this.setScale(1);
     this.graphics = this.canvas.getContext('2d');
+  }
+
+  setScale(factor) {
+    this.scale = this.initialScale * factor;
     this.canvas.width = this.game.court.width * this.scale;
     this.canvas.height = this.game.court.height * this.scale;
   }
