@@ -1,6 +1,6 @@
 # Tetris!
 
-A generic Tetris engine, just for fun. The idea is to create a game engine that runs the logic while keeping the interface decoupled. Suggestions & improvements welcome!
+A generic Tetris engine, in JavaScript, just for fun. The idea is to create a game engine that runs the logic while keeping the interface decoupled. I've no doubt solved some of the problems in a boneheaded fashion — suggestions & improvements welcome!
 
 ## Setup
 
