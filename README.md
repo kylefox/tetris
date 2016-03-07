@@ -11,7 +11,7 @@ npm install
 gulp
 ```
 
-The `gulp` task watches, compiles, and runs a live-reload server at http://localhost:9000/
+The `gulp` task watches, compiles, and runs a live-reload server at [http://localhost:9000/](http://localhost:9000/)
 
 ## Notes
 
