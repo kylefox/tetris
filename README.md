@@ -2,6 +2,8 @@
 
 A generic Tetris engine, in JavaScript, just for fun. The idea is to create a game engine that runs the logic while keeping the interface decoupled. I've no doubt solved some of the problems in a boneheaded fashion — suggestions & improvements welcome!
 
+You can view a (probably outdated) demo at [tetris.kylefox.ca](http://tetris.kylefox.ca/).
+
 ## Setup
 
 ```bash
