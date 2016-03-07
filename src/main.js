@@ -8,13 +8,19 @@ document.body.appendChild(canvas);
 const game = new Game();
 const graphics = new Graphics(game, canvas);
 
+window.game = game;
+
 function tick() {
   game.update();
   graphics.draw();
 }
 
-setInterval(tick, 100);
-tick();
+function start() {
+  window.interval = setInterval(tick, 500);
+  tick();
+}
+
+start();
 
 window.addEventListener('keydown', function(event) {
   if(event.which === 39) {
@@ -29,6 +35,15 @@ window.addEventListener('keydown', function(event) {
   } else if (event.which === 32) {
     game.drop();
     graphics.draw();
+  } else if(event.which === 27) {
+    if(window.interval) {
+      window.clearInterval(window.interval);
+      window.interval = false;
+    } else {
+      start();
+    }
+  } else {
+    console.log(event.which);
   }
 });
 

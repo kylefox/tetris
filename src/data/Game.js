@@ -21,6 +21,7 @@ export default class Game {
 
   next() {
     this.court.freeze(this.currentPiece);
+    this.court.clearFullRows();
     this.currentPiece = this.pieces.next();
   }
 

@@ -20,6 +20,21 @@ export default class Court {
     })
   }
 
+  clearFullRows() {
+    this.eachRow((row, rowIndex) => {
+      // If the number of cells in the row which have a value
+      // is equal to the width of the court, then the row is full and should be cleared.
+      if(row.filter((cell) => cell !== undefined).length === this.width) {
+
+        // Remove the filled row (rowIndex*this.width because our cells are single-dimension array).
+        this.cells.splice(rowIndex*this.width, this.width);
+
+        // Inject a row of undefined cells at the top of the court.
+        Array.prototype.splice.apply(this.cells, [0,0].concat(new Array(this.width)));
+      }
+    });
+  }
+
   cellIndexForPoint(x, y) {
     if(!this.pointInBounds(x, y)) {
       throw new Error(`Point (${x}, ${y}) is out of bounds (${this.width}, ${this.height}).`);

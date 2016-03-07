@@ -35,6 +35,26 @@ var Court = (function () {
       });
     }
   }, {
+    key: 'clearFullRows',
+    value: function clearFullRows() {
+      var _this2 = this;
+
+      this.eachRow(function (row, rowIndex) {
+        // If the number of cells in the row which have a value
+        // is equal to the width of the court, then the row is full and should be cleared.
+        if (row.filter(function (cell) {
+          return cell !== undefined;
+        }).length === _this2.width) {
+
+          // Remove the filled row (rowIndex*this.width because our cells are single-dimension array).
+          _this2.cells.splice(rowIndex * _this2.width, _this2.width);
+
+          // Inject a row of undefined cells at the top of the court.
+          Array.prototype.splice.apply(_this2.cells, [0, 0].concat(new Array(_this2.width)));
+        }
+      });
+    }
+  }, {
     key: 'cellIndexForPoint',
     value: function cellIndexForPoint(x, y) {
       if (!this.pointInBounds(x, y)) {
@@ -129,7 +149,7 @@ var Court = (function () {
   }, {
     key: 'allowRotation',
     value: function allowRotation(piece) {
-      var _this2 = this;
+      var _this3 = this;
 
       // Get next rotation and check if any of the piece blocks intersect with an occupied court cell.
       var allowRotation = true;
@@ -137,7 +157,7 @@ var Court = (function () {
       rotated.rotate();
       rotated.eachRow(function (row, rowIndex) {
         row.forEach(function (column, columnIndex) {
-          if (column && !_this2.cellAvailable(rotated.x + columnIndex, rotated.y + rowIndex)) {
+          if (column && !_this3.cellAvailable(rotated.x + columnIndex, rotated.y + rowIndex)) {
             allowRotation = false;
           }
         });
@@ -198,6 +218,7 @@ var Game = (function () {
     key: 'next',
     value: function next() {
       this.court.freeze(this.currentPiece);
+      this.court.clearFullRows();
       this.currentPiece = this.pieces.next();
     }
   }, {
@@ -558,13 +579,19 @@ document.body.appendChild(canvas);
 var game = new _dataGame2['default']();
 var graphics = new _graphics2['default'](game, canvas);
 
+window.game = game;
+
 function tick() {
   game.update();
   graphics.draw();
 }
 
-setInterval(tick, 100);
-tick();
+function start() {
+  window.interval = setInterval(tick, 500);
+  tick();
+}
+
+start();
 
 window.addEventListener('keydown', function (event) {
   if (event.which === 39) {
@@ -579,6 +606,15 @@ window.addEventListener('keydown', function (event) {
   } else if (event.which === 32) {
     game.drop();
     graphics.draw();
+  } else if (event.which === 27) {
+    if (window.interval) {
+      window.clearInterval(window.interval);
+      window.interval = false;
+    } else {
+      start();
+    }
+  } else {
+    console.log(event.which);
   }
 });
 
