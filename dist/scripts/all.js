@@ -220,6 +220,10 @@ var Game = (function () {
       this.court.freeze(this.currentPiece);
       this.court.clearFullRows();
       this.currentPiece = this.pieces.next();
+      this.currentPiece.y = 0;
+
+      // Can hardcode -2 because we know each block is a 4x4 grid
+      this.currentPiece.x = this.court.width / 2 - 2;
     }
   }, {
     key: 'drop',
@@ -552,11 +556,8 @@ var Graphics = (function () {
             _this2.graphics.fillStyle = _this2.game.currentPiece.color;
             _this2.graphics.fillRect((colIndex + _this2.game.currentPiece.x) * _this2.scale, (rowIndex + _this2.game.currentPiece.y) * _this2.scale, _this2.scale, _this2.scale);
           } else {
-            // this.graphics.fillStyle = "#ffffcc";
-            // this.graphics.fillRect(
-            //   (colIndex+this.game.currentPiece.x) * this.scale,
-            //   (rowIndex+this.game.currentPiece.y) * this.scale,
-            //   this.scale, this.scale);
+            _this2.graphics.fillStyle = "#fff000";
+            _this2.graphics.fillRect((colIndex + _this2.game.currentPiece.x) * _this2.scale, (rowIndex + _this2.game.currentPiece.y) * _this2.scale, _this2.scale, _this2.scale);
           }
         });
       });

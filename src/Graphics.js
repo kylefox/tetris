@@ -48,11 +48,11 @@ export default class Graphics {
             (rowIndex+this.game.currentPiece.y) * this.scale,
             this.scale, this.scale);
         } else {
-          // this.graphics.fillStyle = "#ffffcc";
-          // this.graphics.fillRect(
-          //   (colIndex+this.game.currentPiece.x) * this.scale,
-          //   (rowIndex+this.game.currentPiece.y) * this.scale,
-          //   this.scale, this.scale);
+          this.graphics.fillStyle = "#fff000";
+          this.graphics.fillRect(
+            (colIndex+this.game.currentPiece.x) * this.scale,
+            (rowIndex+this.game.currentPiece.y) * this.scale,
+            this.scale, this.scale);
         }
       });
     });
