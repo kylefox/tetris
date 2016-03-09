@@ -205,7 +205,7 @@ var Game = (function () {
     value: function reset() {
       this.court = new _court2['default']();
       this.pieces = new _pieces2['default']();
-      this.currentPiece = this.pieces.next();
+      this.generateNextPiece();
     }
   }, {
     key: 'update',
@@ -219,9 +219,13 @@ var Game = (function () {
     value: function next() {
       this.court.freeze(this.currentPiece);
       this.court.clearFullRows();
+      this.generateNextPiece();
+    }
+  }, {
+    key: 'generateNextPiece',
+    value: function generateNextPiece() {
       this.currentPiece = this.pieces.next();
       this.currentPiece.y = 0;
-
       // Can hardcode -2 because we know each block is a 4x4 grid
       this.currentPiece.x = this.court.width / 2 - 2;
     }
