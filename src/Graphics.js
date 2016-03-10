@@ -16,14 +16,31 @@ export default class Graphics {
 
   draw() {
     this.graphics.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.drawCurrentPiece();
-    this.drawCourt();
+    this.drawFrame();
+    if(this.game.isRunning()) {
+      this.drawCurrentPiece();
+      this.drawCourt();
+    } else if(this.game.isPaused()) {
+      this.drawPaused();
+    }
   }
 
-  drawCourt() {
+  drawFrame() {
     this.graphics.lineWidth = 1;
     this.graphics.strokeStyle = '#9aa7ad';
     this.graphics.strokeRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  drawPaused() {
+    this.graphics.fillStyle = '#f8f9f9';
+    this.graphics.fillRect(1, 1, this.canvas.width-2, this.canvas.height-2);
+    this.graphics.fillStyle = '#bfc8cb';
+    this.graphics.font = `${this.scale}px monospace`;
+    this.graphics.textAlign = 'center';
+    this.graphics.fillText("PAUSED", this.canvas.width/2, this.canvas.height/2);
+  }
+
+  drawCourt() {
     this.graphics.lineWidth = 0.5;
     this.graphics.strokeStyle = '#e5e8ea';
     this.game.court.eachRow((row, rowIndex) => {

@@ -2,8 +2,7 @@ import Game from './data/game';
 import Graphics from './graphics';
 
 // Initialize Canvas
-const canvas = document.createElement('canvas');
-document.body.appendChild(canvas);
+const canvas = document.querySelectorAll('canvas')[0];
 
 const game = new Game();
 const graphics = new Graphics(game, canvas);
@@ -14,6 +13,7 @@ graphics.setScale(2);
 
 window.game = game;
 window.graphics = graphics;
+
 
 function tick() {
   game.update();
@@ -26,6 +26,7 @@ function start() {
 }
 
 start();
+
 
 window.addEventListener('keydown', function(event) {
   if(event.which === 39) {
@@ -50,4 +51,29 @@ window.addEventListener('keydown', function(event) {
   } else {
     console.log(event.which);
   }
+});
+
+const buttons = {
+  start: document.getElementById('btn-start'),
+  pause: document.getElementById('btn-pause'),
+  end: document.getElementById('btn-end')
+};
+
+buttons.start.addEventListener('click', function() {
+  game.start();
+  graphics.draw();
+});
+
+buttons.pause.addEventListener('click', function() {
+  if(game.isRunning()) {
+    game.pause();
+  } else if(game.isPaused()) {
+    game.unpause();
+  }
+  graphics.draw();
+});
+
+buttons.end.addEventListener('click', function() {
+  game.end();
+  graphics.draw();
 });

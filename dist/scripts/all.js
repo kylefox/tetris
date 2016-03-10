@@ -193,6 +193,13 @@ var _court = require('./court');
 
 var _court2 = _interopRequireDefault(_court);
 
+var GameState = {
+  READY: 'READY',
+  RUNNING: 'RUNNING',
+  PAUSED: 'PAUSED',
+  OVER: 'OVER'
+};
+
 var Game = (function () {
   function Game() {
     _classCallCheck(this, Game);
@@ -205,13 +212,55 @@ var Game = (function () {
     value: function reset() {
       this.court = new _court2['default']();
       this.pieces = new _pieces2['default']();
-      this.currentPiece = this.pieces.next();
+      this.state = GameState.READY;
+    }
+  }, {
+    key: 'start',
+    value: function start() {
+      this.reset();
+      this.state = GameState.RUNNING;
+      this.generateNextPiece();
+    }
+  }, {
+    key: 'pause',
+    value: function pause() {
+      if (this.isRunning()) {
+        this.state = GameState.PAUSED;
+      } else {
+        throw new Error('Can\'t pause game in ' + this.state + ' state.');
+      }
+    }
+  }, {
+    key: 'unpause',
+    value: function unpause() {
+      if (this.isPaused()) {
+        this.state = GameState.RUNNING;
+      } else {
+        throw new Error('Can\'t pause game in ' + this.state + ' state.');
+      }
+    }
+  }, {
+    key: 'end',
+    value: function end() {
+      this.state = GameState.OVER;
+    }
+  }, {
+    key: 'isPaused',
+    value: function isPaused() {
+      return this.state === GameState.PAUSED;
+    }
+  }, {
+    key: 'isRunning',
+    value: function isRunning() {
+      return this.state === GameState.RUNNING;
     }
   }, {
     key: 'update',
     value: function update() {
-      if (!this.moveDown()) {
-        this.next();
+      if (this.state === GameState.RUNNING) {
+        if (!this.moveDown()) {
+          this.next();
+        }
       }
     }
   }, {
@@ -219,9 +268,13 @@ var Game = (function () {
     value: function next() {
       this.court.freeze(this.currentPiece);
       this.court.clearFullRows();
+      this.generateNextPiece();
+    }
+  }, {
+    key: 'generateNextPiece',
+    value: function generateNextPiece() {
       this.currentPiece = this.pieces.next();
       this.currentPiece.y = 0;
-
       // Can hardcode -2 because we know each block is a 4x4 grid
       this.currentPiece.x = this.court.width / 2 - 2;
     }
@@ -521,17 +574,36 @@ var Graphics = (function () {
     key: 'draw',
     value: function draw() {
       this.graphics.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.drawCurrentPiece();
-      this.drawCourt();
+      this.drawFrame();
+      if (this.game.isRunning()) {
+        this.drawCurrentPiece();
+        this.drawCourt();
+      } else if (this.game.isPaused()) {
+        this.drawPaused();
+      }
+    }
+  }, {
+    key: 'drawFrame',
+    value: function drawFrame() {
+      this.graphics.lineWidth = 1;
+      this.graphics.strokeStyle = '#9aa7ad';
+      this.graphics.strokeRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+  }, {
+    key: 'drawPaused',
+    value: function drawPaused() {
+      this.graphics.fillStyle = '#f8f9f9';
+      this.graphics.fillRect(1, 1, this.canvas.width - 2, this.canvas.height - 2);
+      this.graphics.fillStyle = '#bfc8cb';
+      this.graphics.font = this.scale + 'px monospace';
+      this.graphics.textAlign = 'center';
+      this.graphics.fillText("PAUSED", this.canvas.width / 2, this.canvas.height / 2);
     }
   }, {
     key: 'drawCourt',
     value: function drawCourt() {
       var _this = this;
 
-      this.graphics.lineWidth = 1;
-      this.graphics.strokeStyle = '#9aa7ad';
-      this.graphics.strokeRect(0, 0, this.canvas.width, this.canvas.height);
       this.graphics.lineWidth = 0.5;
       this.graphics.strokeStyle = '#e5e8ea';
       this.game.court.eachRow(function (row, rowIndex) {
@@ -584,8 +656,7 @@ var _graphics = require('./graphics');
 var _graphics2 = _interopRequireDefault(_graphics);
 
 // Initialize Canvas
-var canvas = document.createElement('canvas');
-document.body.appendChild(canvas);
+var canvas = document.querySelectorAll('canvas')[0];
 
 var game = new _dataGame2['default']();
 var graphics = new _graphics2['default'](game, canvas);
@@ -632,6 +703,31 @@ window.addEventListener('keydown', function (event) {
   } else {
     console.log(event.which);
   }
+});
+
+var buttons = {
+  start: document.getElementById('btn-start'),
+  pause: document.getElementById('btn-pause'),
+  end: document.getElementById('btn-end')
+};
+
+buttons.start.addEventListener('click', function () {
+  game.start();
+  graphics.draw();
+});
+
+buttons.pause.addEventListener('click', function () {
+  if (game.isRunning()) {
+    game.pause();
+  } else if (game.isPaused()) {
+    game.unpause();
+  }
+  graphics.draw();
+});
+
+buttons.end.addEventListener('click', function () {
+  game.end();
+  graphics.draw();
 });
 
 },{"./data/game":2,"./graphics":4}]},{},[5]);

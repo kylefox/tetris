@@ -1,6 +1,15 @@
 import Pieces from './pieces';
 import Court from './court';
 
+
+const GameState = {
+  READY: 'READY',
+  RUNNING: 'RUNNING',
+  PAUSED: 'PAUSED',
+  OVER: 'OVER',
+};
+
+
 export default class Game {
 
   constructor() {
@@ -10,21 +19,60 @@ export default class Game {
   reset() {
     this.court = new Court();
     this.pieces = new Pieces();
-    this.currentPiece = this.pieces.next();
+    this.state = GameState.READY;
+  }
+
+  start() {
+    this.reset();
+    this.state = GameState.RUNNING;
+    this.generateNextPiece();
+  }
+
+  pause() {
+    if(this.isRunning()) {
+      this.state = GameState.PAUSED;
+    } else {
+      throw new Error(`Can't pause game in ${this.state} state.`);
+    }
+  }
+
+  unpause() {
+    if(this.isPaused()) {
+      this.state = GameState.RUNNING;
+    } else {
+      throw new Error(`Can't pause game in ${this.state} state.`);
+    }
+  }
+
+  end() {
+    this.state = GameState.OVER;
+  }
+
+  isPaused() {
+    return this.state === GameState.PAUSED;
+  }
+
+  isRunning() {
+    return this.state === GameState.RUNNING;
   }
 
   update() {
-    if(!this.moveDown()) {
-      this.next();
+    if(this.state === GameState.RUNNING) {
+      if(!this.moveDown()) {
+        this.next();
+      }
     }
   }
 
   next() {
     this.court.freeze(this.currentPiece);
     this.court.clearFullRows();
+    this.generateNextPiece();
+  }
+
+  generateNextPiece() {
     this.currentPiece = this.pieces.next();
     this.currentPiece.y = 0;
-
     // Can hardcode -2 because we know each block is a 4x4 grid
     this.currentPiece.x = this.court.width/2 - 2;
   }
