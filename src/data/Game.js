@@ -1,6 +1,15 @@
 import Pieces from './pieces';
 import Court from './court';
 
+
+const GameState = {
+  READY: 'READY',
+  RUNNING: 'RUNNING',
+  PAUSED: 'PAUSED',
+  OVER: 'OVER',
+};
+
+
 export default class Game {
 
   constructor() {
@@ -10,12 +19,48 @@ export default class Game {
   reset() {
     this.court = new Court();
     this.pieces = new Pieces();
+    this.state = GameState.READY;
+  }
+
+  start() {
+    this.reset();
+    this.state = GameState.RUNNING;
     this.generateNextPiece();
   }
 
+  pause() {
+    if(this.isRunning()) {
+      this.state = GameState.PAUSED;
+    } else {
+      throw new Error(`Can't pause game in ${this.state} state.`);
+    }
+  }
+
+  unpause() {
+    if(this.isPaused()) {
+      this.state = GameState.RUNNING;
+    } else {
+      throw new Error(`Can't pause game in ${this.state} state.`);
+    }
+  }
+
+  end() {
+    this.state = GameState.OVER;
+  }
+
+  isPaused() {
+    return this.state === GameState.PAUSED;
+  }
+
+  isRunning() {
+    return this.state === GameState.RUNNING;
+  }
+
   update() {
-    if(!this.moveDown()) {
-      this.next();
+    if(this.state === GameState.RUNNING) {
+      if(!this.moveDown()) {
+        this.next();
+      }
     }
   }
 
