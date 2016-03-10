@@ -15,8 +15,9 @@ gulp
 
 The `gulp` task watches, compiles, and runs a live-reload server at [http://localhost:9000/](http://localhost:9000/)
 
-## Notes
+## Notes & Resources
 
+* Tetris rules for [Super Rotation System](http://tetris.wikia.com/wiki/SRS)
 * Gulp project based on [vintem/gulp-babel-demo](https://github.com/vintem/gulp-babel-demo)
 * Some ideas inspired by [Javascript Tetris](http://codeincomplete.com/posts/2011/10/10/javascript_tetris/)
 
